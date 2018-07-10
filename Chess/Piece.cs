@@ -11,7 +11,7 @@ namespace Chess
         public String name;
         public int id;
         public Boolean color;
-        public Point position;
+        public Point position = new Point();
 
         public abstract void Move();
         public abstract void Attack();
@@ -36,15 +36,17 @@ namespace Chess
 
         public override void Attack()
         {
-            if (!(Board.chessBoard[this.position.X + 1, this.position.Y + 1] is Empty) && Board.chessBoard[this.position.X + 1, this.position.Y + 1].color != Board.chessBoard[this.position.X, this.position.Y].color)
+            int x = this.position.X;
+            int y = this.position.Y;
+            if (x+1<=7 && y+1<=7 && !(Board.chessBoard[x + 1, y + 1] is Empty) && Board.chessBoard[x + 1, y + 1].color != this.color)
             {
-                Board.chessBoard[this.position.X + 1, this.position.Y + 1] = new Empty(this.position.X + 1, this.position.Y + 1);
+                Board.chessBoard[x + 1, y + 1] = new Empty(x + 1, y + 1);
                 this.position.X += 1;
                 this.position.Y += 1;
             }
-            else if (!(Board.chessBoard[this.position.X - 1, this.position.Y + 1] is Empty) && Board.chessBoard[this.position.X - 1, this.position.Y + 1].color != Board.chessBoard[this.position.X, this.position.Y].color)
+            else if (!(Board.chessBoard[x - 1, y + 1] is Empty) && Board.chessBoard[x - 1, y + 1].color != Board.chessBoard[x, y].color)
             {
-                Board.chessBoard[this.position.X - 1, this.position.Y + 1] = new Empty(this.position.X - 1, this.position.Y + 1);
+                Board.chessBoard[x - 1, y + 1] = new Empty(x - 1, y + 1);
                 this.position.X -= 1;
                 this.position.Y += 1;
             }
@@ -52,6 +54,7 @@ namespace Chess
 
         public override void Move()
         {
+ /*-----------------------------------ti tha ginei me ta apo pano??---------------------------------------*/
             int x = this.position.X;
             int y = this.position.Y;
             if (y == 1 && Board.chessBoard[x, y + 1] is Empty && Board.chessBoard[x, y + 2] is Empty)
@@ -172,6 +175,8 @@ namespace Chess
                 if (emptySpaces == i - y)
                 {
                     this.position.Y = i;
+                    //fonazeis ton mini max
+
                     return;
                 }
             }

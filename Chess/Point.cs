@@ -14,6 +14,7 @@ namespace Chess
             this.X = a;
             this.Y = b;
         }
+        public Point() { }
 
         public int X { get => x; set => x = value; }
         public int Y { get => y; set => y = value; }
