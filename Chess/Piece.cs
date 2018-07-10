@@ -15,6 +15,11 @@ namespace Chess
 
         public abstract void Move();
         public abstract void Attack();
+        public static void Print(Piece piece) {
+
+
+
+        }
     }
     class Pawn : Piece
     {
@@ -31,20 +36,33 @@ namespace Chess
 
         public override void Attack()
         {
-
+            if (!(Board.chessBoard[this.position.X + 1, this.position.Y + 1] is Empty) && Board.chessBoard[this.position.X + 1, this.position.Y + 1].color != Board.chessBoard[this.position.X, this.position.Y].color)
+            {
+                Board.chessBoard[this.position.X + 1, this.position.Y + 1] = new Empty(this.position.X + 1, this.position.Y + 1);
+                this.position.X += 1;
+                this.position.Y += 1;
+            }
+            else if (!(Board.chessBoard[this.position.X - 1, this.position.Y + 1] is Empty) && Board.chessBoard[this.position.X - 1, this.position.Y + 1].color != Board.chessBoard[this.position.X, this.position.Y].color)
+            {
+                Board.chessBoard[this.position.X - 1, this.position.Y + 1] = new Empty(this.position.X - 1, this.position.Y + 1);
+                this.position.X -= 1;
+                this.position.Y += 1;
+            }
         }
 
         public override void Move()
         {
-            if (this.position.Y == 1 && Board.chessBoard[this.position.X, this.position.Y + 1] is Empty && Board.chessBoard[this.position.X, this.position.Y + 2] is Empty)
+            int x = this.position.X;
+            int y = this.position.Y;
+            if (y == 1 && Board.chessBoard[x, y + 1] is Empty && Board.chessBoard[x, y + 2] is Empty)
                 this.position.Y += 2;
 
-            else if (this.position.Y < 6 && Board.chessBoard[this.position.X, this.position.Y + 1] is Empty)
+            else if (y < 6 && Board.chessBoard[x, y + 1] is Empty)
                 this.position.Y += 1;
 
-            else if (this.position.Y == 1 && Board.chessBoard[this.position.X, this.position.Y + 1] is Empty)
+            else if (y == 1 && Board.chessBoard[x, y + 1] is Empty)
                 this.position.Y += 1;
-            else if (this.position.Y == 6 && Board.chessBoard[this.position.X, this.position.Y + 1] is Empty)
+            else if (y == 6 && Board.chessBoard[x, y + 1] is Empty)
             {
                 this.position.Y += 1;
                 this.transform();
@@ -92,60 +110,105 @@ namespace Chess
         }
         public override void Attack()
         {
-            throw new NotImplementedException();
+            int originalX = this.position.X;
+            int originalY = this.position.Y;
+
+
+            int y = originalY;
+            int x = originalX;
+
+            while (Board.chessBoard[this.position.X, y] is Empty && y<7) {
+                y++;
+            }
+            if (Board.chessBoard[this.position.X, y].color != Board.chessBoard[this.position.X, this.position.Y].color) {
+                Board.chessBoard[this.position.X, y] = new Empty(this.position.X, y);
+                this.position.Y = y;
+            }
+            y = originalY;
+            while (Board.chessBoard[this.position.X, y] is Empty && y>0)
+            {
+                y--;
+            }
+            if (Board.chessBoard[this.position.X, y].color != Board.chessBoard[this.position.X, this.position.Y].color)
+            {
+                Board.chessBoard[this.position.X, y] = new Empty(this.position.X, y);
+                this.position.Y = y;
+            }
+            y = originalY;
+            while (Board.chessBoard[x, this.position.Y] is Empty && x>0)
+            {
+                x--;
+            }
+            if (Board.chessBoard[x, this.position.Y].color != Board.chessBoard[this.position.X, this.position.Y].color)
+            {
+                Board.chessBoard[x, this.position.Y] = new Empty(x, this.position.Y);
+                this.position.X = x;
+            }
+            x = originalX;
+            while (Board.chessBoard[x, this.position.Y] is Empty && x<7)
+            {
+                x++;
+            }
+            if (Board.chessBoard[x, this.position.Y].color != this.color)
+            {
+                Board.chessBoard[x, this.position.Y] = new Empty(x, this.position.Y);
+                this.position.X = x;
+            }
+            x = originalX;
         }
 
         public override void Move()
         {
-
-            for (int i = this.position.Y; i < 7; i++)
+            int x = this.position.X;
+            int y = this.position.Y;
+            for (int i = y; i < 7; i++)
             {
                 int emptySpaces = 0;
-                for (int j = this.position.Y; j < i; j++)
+                for (int j = y; j < i; j++)
                 {
-                    if (Board.chessBoard[this.position.X, j] is Empty)
+                    if (Board.chessBoard[x, j] is Empty)
                         emptySpaces += 1;
                 }
-                if (emptySpaces == i - this.position.Y)
+                if (emptySpaces == i - y)
                 {
                     this.position.Y = i;
                     return;
                 }
             }
-            for (int i = this.position.X; i < 7; i++) {
+            for (int i = x; i < 7; i++) {
                 int emptySpaces = 0;
-                for (int j = this.position.X; j < i; j++)
+                for (int j = x; j < i; j++)
                 {
-                    if (Board.chessBoard[j, this.position.Y] is Empty)
+                    if (Board.chessBoard[j, y] is Empty)
                         emptySpaces += 1;
                 }
-                if (emptySpaces == i - this.position.X) {
+                if (emptySpaces == i - x) {
                     this.position.X = i;
                     return;
                 }
             }
-            for (int i = this.position.Y; i >0 ; i--)
+            for (int i = y; i >0 ; i--)
             {
                 int emptySpaces = 0;
-                for (int j = this.position.Y; j > i; j--)
+                for (int j = y; j > i; j--)
                 {
-                    if (Board.chessBoard[this.position.X, j] is Empty)
+                    if (Board.chessBoard[x, j] is Empty)
                         emptySpaces += 1;
                 }
-                if (emptySpaces == Math.Abs(i - this.position.Y))
+                if (emptySpaces == Math.Abs(i - y))
                 {
                     this.position.Y = i;
                     return;
                 }
             }
-            for (int i = this.position.X; i > 0; i--) {
+            for (int i = x; i > 0; i--) {
                 int emptySpaces = 0;
-                for (int j = this.position.X; j > i; j--)
+                for (int j = x; j > i; j--)
                 {
-                    if (Board.chessBoard[j, this.position.Y] is Empty)
+                    if (Board.chessBoard[j, y] is Empty)
                         emptySpaces += 1;
                 }
-                if (emptySpaces == Math.Abs(i - this.position.X))
+                if (emptySpaces == Math.Abs(i - x))
                 {
                     this.position.X = i;
                     return;
@@ -168,47 +231,102 @@ namespace Chess
 
         public override void Attack()
         {
-            throw new NotImplementedException();
+            int x = this.position.X;
+            int y = this.position.Y;
+            if (x+1<=7 && y+2<=7 && !(Board.chessBoard[x + 1, y + 2] is Empty) && Board.chessBoard[x + 1, y + 2].color != this.color) {
+                Board.chessBoard[x + 1, y + 2] = new Empty(x + 1, y + 2);
+                this.position.X = x;
+                this.position.Y = y;
+            }
+         
+            if (x+1<=7 && y-2>=0 && !(Board.chessBoard[x + 1, y - 2] is Empty) && Board.chessBoard[x + 1, y - 2].color != this.color)
+            {
+                Board.chessBoard[x + 1, y - 2] = new Empty(x + 1, y - 2);
+                this.position.X = x;
+                this.position.Y = y;
+            }
+        
+            if (x-1>=0 && y+2 <=7 && !(Board.chessBoard[x - 1, y + 2] is Empty) && Board.chessBoard[x - 1, y + 2].color != this.color)
+            {
+                Board.chessBoard[x - 1, y + 2] = new Empty(x - 1, y + 2);
+                this.position.X = x;
+                this.position.Y = y;
+            }
+          
+            if (x-1>=0 && y-2>=0 && !(Board.chessBoard[x - 1, y - 2] is Empty) && Board.chessBoard[x - 1, y - 2].color != this.color)
+            {
+                Board.chessBoard[x - 1, y - 2] = new Empty(x - 1, y - 2);
+                this.position.X = x;
+                this.position.Y = y;
+            }
+        
+            if (x+2<= 7 && y+1 <= 7 && !(Board.chessBoard[x + 2, y + 1] is Empty) && Board.chessBoard[x + 2, y + 1].color != this.color)
+            {
+                Board.chessBoard[x + 2, y + 1] = new Empty(x + 2, y + 1);
+                this.position.X = x;
+                this.position.Y = y;
+            }
+           
+            if (x+2<= 7 && y-1>=0 && !(Board.chessBoard[x + 2, y - 1] is Empty) && Board.chessBoard[x + 2, y - 1].color != this.color)
+            {
+                Board.chessBoard[x + 2, y - 1] = new Empty(x + 2, y - 1);
+                this.position.X = x;
+                this.position.Y = y;
+            }
+            if (x-2>=0 && y+1 <=7 && !(Board.chessBoard[x - 2, y + 1] is Empty) && Board.chessBoard[x - 2, y + 1].color != this.color)
+            {
+                Board.chessBoard[x - 2, y + 1] = new Empty(x - 2, y + 1);
+                this.position.X = x;
+                this.position.Y = y;
+            }
+            if (x-2>=0 && y-1>=0 && !(Board.chessBoard[x - 2, y - 1] is Empty) && Board.chessBoard[x - 2, y - 1].color != this.color)
+            {
+                Board.chessBoard[x - 2, y - 1] = new Empty(x - 2, y - 1);
+                this.position.X = x;
+                this.position.Y = y;
+            }
         }
 
         public override void Move()
         {
-            if (this.position.X + 1 <= 7 && this.position.Y + 2 <= 7 && Board.chessBoard[this.position.X + 1, this.position.Y + 2] is Empty)
+            int x = this.position.X;
+            int y = this.position.Y;
+            if (x + 1 <= 7 && y + 2 <= 7 && Board.chessBoard[x + 1, y + 2] is Empty)
             {
                 this.position.X += 1;
                 this.position.Y += 2;
             }
-            else if (this.position.X + 1 <= 7 && this.position.Y - 2 >= 0 && Board.chessBoard[this.position.X + 1, this.position.Y - 2] is Empty)
+            else if (x + 1 <= 7 && y - 2 >= 0 && Board.chessBoard[x + 1, y - 2] is Empty)
             {
                 this.position.X += 1;
                 this.position.Y -= 2;
             }
-            else if (this.position.X - 1 >= 0 && this.position.Y + 2 <= 7 && Board.chessBoard[this.position.X - 1, this.position.Y + 2] is Empty)
+            else if (x - 1 >= 0 && y + 2 <= 7 && Board.chessBoard[x - 1, y + 2] is Empty)
             {
                 this.position.X -= 1;
                 this.position.Y += 2;
             }
-            else if (this.position.X - 1 >= 0 && this.position.Y - 2 >= 0 && Board.chessBoard[this.position.X - 1, this.position.Y - 2] is Empty)
+            else if (x - 1 >= 0 && y - 2 >= 0 && Board.chessBoard[x - 1, y - 2] is Empty)
             {
                 this.position.X -= 1;
                 this.position.Y -= 2;
             }
-            else if (this.position.X + 2 <= 7 && this.position.Y + 1 <= 7 && Board.chessBoard[this.position.X + 2, this.position.Y + 1] is Empty)
+            else if (x + 2 <= 7 && y + 1 <= 7 && Board.chessBoard[x + 2, y + 1] is Empty)
             {
                 this.position.X += 2;
                 this.position.Y += 1;
             }
-            else if (this.position.X + 2 <= 7 && this.position.Y - 1 >= 0 && Board.chessBoard[this.position.X + 2, this.position.Y - 1] is Empty)
+            else if (x + 2 <= 7 && y - 1 >= 0 && Board.chessBoard[x + 2, y - 1] is Empty)
             {
                 this.position.X += 2;
                 this.position.Y -= 1;
             }
-            else if (this.position.X - 2 >= 0 && this.position.Y + 1 <= 7 && Board.chessBoard[this.position.X - 2, this.position.Y + 1] is Empty)
+            else if (x - 2 >= 0 && y + 1 <= 7 && Board.chessBoard[x - 2, y + 1] is Empty)
             {
                 this.position.X -= 2;
                 this.position.Y += 1;
             }
-            else if (this.position.X - 2 >= 0 && this.position.Y - 1 >= 0 && Board.chessBoard[this.position.X - 2, this.position.Y - 1] is Empty)
+            else if (x - 2 >= 0 && y - 1 >= 0 && Board.chessBoard[x - 2, y - 1] is Empty)
             {
                 this.position.X -= 2;
                 this.position.Y -= 1;
@@ -232,63 +350,120 @@ namespace Chess
 
 
 
-    public override void Attack()
+        public override void Attack()
         {
-            throw new NotImplementedException();
+            int x = this.position.X;
+            int y = this.position.Y;
+            int tempX = x;
+            int tempY = y;
+            while (Board.chessBoard[tempX, tempY] is Empty && tempX < 7 && tempY < 7)
+            {
+                tempX++;
+                tempY++;
+            }
+            if (Board.chessBoard[tempX, tempY].color != this.color)
+            {
+                Board.chessBoard[tempX, tempY] = new Empty(tempX, tempY);
+                this.position.X = tempX;
+                this.position.Y = tempY;
+            }
+            tempX = x;
+            tempY = y;
+            while (Board.chessBoard[tempX, tempY] is Empty && tempX > 0 && tempY < 7)
+            {
+                tempX--;
+                tempY++;
+            }
+            if (Board.chessBoard[tempX, tempY].color != this.color)
+            {
+                Board.chessBoard[tempX, tempY] = new Empty(tempX, tempY);
+                this.position.X = tempX;
+                this.position.Y = tempY;
+
+            }
+            tempX = x;
+            tempY = y;
+            while (Board.chessBoard[tempX, tempY] is Empty && tempX > 0 && tempY > 0)
+            {
+                tempX--;
+                tempY--;
+            }
+            if (Board.chessBoard[tempX, tempY].color != this.color)
+            {
+                Board.chessBoard[tempX, tempY] = new Empty(tempX, tempY);
+                this.position.X = tempX;
+                this.position.Y = tempY;
+
+            }
+            tempX = x;
+            tempY = y;
+            while (Board.chessBoard[tempX, tempY] is Empty && tempX < 7 && tempY > 0)
+            {
+                tempX++;
+                tempY--;
+            }
+            if (Board.chessBoard[tempX, tempY].color != this.color)
+            {
+                Board.chessBoard[tempX, tempY] = new Empty(tempX, tempY);
+                this.position.X = tempX;
+                this.position.Y = tempY;
+
+            }
         }
 
         public override void Move()
         {
-            for (Point p = this.position; p.X <= 7 && p.X >= 0 && p.Y >= 0 && p.Y <= 7; p.X++, p.Y++) {
+            Point originalPosition = this.position;
+            for (Point p = originalPosition; p.X <= 7 && p.X >= 0 && p.Y >= 0 && p.Y <= 7; p.X++, p.Y++) {
                 int emptySpaces = 0;
-                for (Point j = this.position; j.X < p.X && j.Y<p.Y; j.X++,j.Y++)
+                for (Point j = originalPosition; j.X < p.X && j.Y<p.Y; j.X++,j.Y++)
                 {
                     if (Board.chessBoard[j.X, j.Y] is Empty)
                         emptySpaces += 1;
                 }
-                if (emptySpaces == p.X - this.position.X)
+                if (emptySpaces == p.X - originalPosition.X)
                 {
                     this.position = p;
                     return;
                 }
             }
-            for (Point p = this.position; p.X <= 7 && p.X >= 0 && p.Y >= 0 && p.Y <= 7; p.X++, p.Y--)
+            for (Point p = originalPosition; p.X <= 7 && p.X >= 0 && p.Y >= 0 && p.Y <= 7; p.X++, p.Y--)
             {
                 int emptySpaces = 0;
-                for (Point j = this.position; j.X < p.X && j.Y > p.Y; j.X++, j.Y--)
+                for (Point j = originalPosition; j.X < p.X && j.Y > p.Y; j.X++, j.Y--)
                 {
                     if (Board.chessBoard[j.X, j.Y] is Empty)
                         emptySpaces += 1;
                 }
-                if (emptySpaces == p.X - this.position.X)
+                if (emptySpaces == p.X - originalPosition.X)
                 {
                     this.position = p;
                     return;
                 }
             }
-            for (Point p = this.position; p.X <= 7 && p.X >= 0 && p.Y >= 0 && p.Y <= 7; p.X--, p.Y--)
+            for (Point p = originalPosition; p.X <= 7 && p.X >= 0 && p.Y >= 0 && p.Y <= 7; p.X--, p.Y--)
             {
                 int emptySpaces = 0;
-                for (Point j = this.position; j.X > p.X && j.Y > p.Y; j.X--, j.Y--)
+                for (Point j = originalPosition; j.X > p.X && j.Y > p.Y; j.X--, j.Y--)
                 {
                     if (Board.chessBoard[j.X, j.Y] is Empty)
                         emptySpaces += 1;
                 }
-                if (emptySpaces == this.position.X- p.X)
+                if (emptySpaces == originalPosition.X- p.X)
                 {
                     this.position = p;
                     return;
                 }
             }
-            for (Point p = this.position; p.X <= 7 && p.X >= 0 && p.Y >= 0 && p.Y <= 7; p.X--, p.Y++)
+            for (Point p = originalPosition; p.X <= 7 && p.X >= 0 && p.Y >= 0 && p.Y <= 7; p.X--, p.Y++)
             {
                 int emptySpaces = 0;
-                for (Point j = this.position; j.X > p.X && j.Y < p.Y; j.X--, j.Y++)
+                for (Point j = originalPosition; j.X > p.X && j.Y < p.Y; j.X--, j.Y++)
                 {
                     if (Board.chessBoard[j.X, j.Y] is Empty)
                         emptySpaces += 1;
                 }
-                if (emptySpaces == p.Y - this.position.Y)
+                if (emptySpaces == p.Y - originalPosition.Y)
                 {
                     this.position = p;
                     return;
@@ -311,7 +486,11 @@ namespace Chess
 
         public override void Attack()
         {
-            throw new NotImplementedException();
+            new Rook(this.position.X, this.position.Y, this.color).Attack();
+            new Bishop(this.position.X, this.position.Y, this.color).Attack();
+            /* auto exei problima logika giati tha bazei sti thesi pou brike oxi basilisa
+             * alla analoga rook i bishop*/
+
         }
 
         public override void Move()
@@ -333,51 +512,103 @@ namespace Chess
 
         public override void Attack()
         {
-            throw new NotImplementedException();
+            int x = this.position.X;
+            int y = this.position.Y;
+
+            if (x + 1 <= 7 && y + 1 <= 7 && !(Board.chessBoard[x + 1, y + 1] is Empty) && Board.chessBoard[x + 1, y + 1].color != this.color)
+            {
+                Board.chessBoard[x + 1, y + 1] = new Empty(x + 1, y + 1);
+                this.position.X = x + 1;
+                this.position.Y = y + 1;
+            }
+            if (y + 1 <= 7 && !(Board.chessBoard[x, y + 1] is Empty) && Board.chessBoard[x, y + 1].color != this.color) { 
+                Board.chessBoard[x, y + 1] = new Empty(x, y + 1);
+                this.position.Y = y + 1;
+            }
+            if (x - 1 >= 0 && y + 1 <= 7 && !(Board.chessBoard[x - 1, y + 1] is Empty) && Board.chessBoard[x - 1, y + 1].color != this.color)
+            {
+                Board.chessBoard[x - 1, y + 1] = new Empty(x - 1, y + 1);
+                this.position.X = x - 1;
+                this.position.Y = y + 1;
+            }
+            if (x - 1 >= 0 && !(Board.chessBoard[x - 1, y] is Empty) && Board.chessBoard[x - 1, y].color != this.color)
+            {
+                Board.chessBoard[x - 1, y] = new Empty(x - 1, y);
+                this.position.X = x - 1;
+            }
+            if (x - 1 >= 0 && y - 1 >= 0 && !(Board.chessBoard[x - 1, y - 1] is Empty) && Board.chessBoard[x - 1, y - 1].color != this.color)
+            {
+                Board.chessBoard[x - 1, y - 1] = new Empty(x - 1, y - 1);
+                this.position.X = x - 1;
+                this.position.Y = y - 1;
+            }
+            if (y - 1 >= 0 && !(Board.chessBoard[x, y - 1] is Empty) && Board.chessBoard[x, y - 1].color != this.color)
+            {
+                Board.chessBoard[x, y - 1] = new Empty(x, y - 1);
+                this.position.Y = y - 1;
+            }
+            if (x + 1 <= 7 && y - 1 >= 0 && !(Board.chessBoard[x + 1, y - 1] is Empty) && Board.chessBoard[x + 1, y - 1].color != this.color)
+            {
+                Board.chessBoard[x + 1, y - 1] = new Empty(x + 1, y - 1);
+                this.position.X = x + 1;
+                this.position.Y = y - 1;
+            }
+            if (x + 1 <= 7 && !(Board.chessBoard[x + 1, y] is Empty) && Board.chessBoard[x + 1, y].color != this.color)
+            {
+                Board.chessBoard[x + 1, y] = new Empty(x + 1, y);
+                this.position.X = x + 1;
+                
+            }
+
+
+
         }
 
         public override void Move()
         {
-            if (this.position.X + 1 <= 7 && this.position.Y + 1 <= 7 && Board.chessBoard[this.position.X + 1, this.position.Y + 1] is Empty)
+            int x = this.position.X;
+            int y = this.position.Y;
+
+            if (x + 1 <= 7 && y + 1 <= 7 && Board.chessBoard[x + 1, y + 1] is Empty)
             {
                 this.position.X += 1;
                 this.position.Y += 1;
             }
-            else if (this.position.X - 1 >= 0 && this.position.Y + 1 <= 7 && Board.chessBoard[this.position.X - 1, this.position.Y + 1] is Empty)
+            else if (x - 1 >= 0 && y + 1 <= 7 && Board.chessBoard[x - 1, y + 1] is Empty)
             {
                 this.position.X -= 1;
                 this.position.Y += 1;
             }
-            else if (this.position.X + 1 <= 7 && this.position.Y - 1 >= 0 && Board.chessBoard[this.position.X + 1, this.position.Y - 1] is Empty)
+            else if (x + 1 <= 7 && y - 1 >= 0 && Board.chessBoard[x + 1, y - 1] is Empty)
             {
                 this.position.X += 1;
                 this.position.Y -= 1;
             }
-            else if (this.position.X - 1 >= 0 && this.position.Y - 1 >= 0 && Board.chessBoard[this.position.X - 1, this.position.Y - 1] is Empty)
+            else if (x - 1 >= 0 && y - 1 >= 0 && Board.chessBoard[x - 1, y - 1] is Empty)
             {
                 this.position.X -= 1;
                 this.position.Y -= 1;
             }
-            else if (this.position.Y + 1 <= 7 && Board.chessBoard[this.position.X, this.position.Y + 1] is Empty)
+            else if (y + 1 <= 7 && Board.chessBoard[x, y + 1] is Empty)
             {
 
                 this.position.Y += 1;
             }
-            else if (this.position.Y - 1 >= 0 && Board.chessBoard[this.position.X, this.position.Y - 1] is Empty)
+            else if (y - 1 >= 0 && Board.chessBoard[x, y - 1] is Empty)
             {
                 this.position.Y -= 1;
             }
-            else if (this.position.X + 1 <= 7 && Board.chessBoard[this.position.X + 1, this.position.Y] is Empty)
+            else if (x + 1 <= 7 && Board.chessBoard[x + 1, y] is Empty)
             {
                 this.position.X += 1;
             }
-            else if (this.position.X - 1 >= 0 && Board.chessBoard[this.position.X - 1, this.position.Y] is Empty)
+            else if (x - 1 >= 0 && Board.chessBoard[x - 1, y] is Empty)
             {
                 this.position.X -= 1;
             }
             else
                 //an apileite
-                Console.WriteLine("Check Mate");
+                Console.WriteLine("Check Mate");           
         }
     }
 }
