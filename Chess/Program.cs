@@ -21,6 +21,9 @@ namespace Chess
             
             Board.StartingChessBoard();
             Board.PrintChessBoard();
+            Board.chessBoard[0, 1].Move();
+            Board.PrintChessBoard();
+
 
 
             Application.Run(new Form1());

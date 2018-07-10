@@ -58,13 +58,25 @@ namespace Chess
             int x = this.position.X;
             int y = this.position.Y;
             if (y == 1 && Board.chessBoard[x, y + 1] is Empty && Board.chessBoard[x, y + 2] is Empty)
+            {
                 this.position.Y += 2;
+               
+            }
+
 
             else if (y < 6 && Board.chessBoard[x, y + 1] is Empty)
+            {
                 this.position.Y += 1;
+                Board.chessBoard[x, this.position.Y] = Board.chessBoard[x, y];
+                Board.chessBoard[x, y] = new Empty(x, y);
+            }
 
             else if (y == 1 && Board.chessBoard[x, y + 1] is Empty)
+            {
                 this.position.Y += 1;
+                Board.chessBoard[x, this.position.Y] = Board.chessBoard[x, y];
+                Board.chessBoard[x, y] = new Empty(x, y);
+            }
             else if (y == 6 && Board.chessBoard[x, y + 1] is Empty)
             {
                 this.position.Y += 1;
@@ -300,6 +312,8 @@ namespace Chess
             {
                 this.position.X += 1;
                 this.position.Y += 2;
+     
+                
             }
             else if (x + 1 <= 7 && y - 2 >= 0 && Board.chessBoard[x + 1, y - 2] is Empty)
             {
